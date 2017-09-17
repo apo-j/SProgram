@@ -8,18 +8,22 @@ Page({
     title: '',
     goods: null,
     accountType: '',
-    cateName: null
+    cateName: null,
+    cateId: null
   },
 
   onLoad: function(option) {
+    this.setData({
+      cateId: option.id,
+      cateName: option.name
+    });
   },
 
   onShow() {
     var that = this;
-    var cate = app.globalData.currentCate;
 
-    this.setData({cateName: cate.name})
-    that.getGoodsList(cate.id);
+    this.setData({cateName: this.data.cateName})
+    that.getGoodsList(this.data.cateId);
   },
 
   onReady() {
@@ -66,7 +70,7 @@ getGoodsList: function (categoryId) {
     var that = this
 
     wx.navigateTo({
-      url: `../show_product/show_product?id=${e.currentTarget.dataset.id}&type=${this.data.categoryType}`
+      url: `../goods-details/index?id=${e.currentTarget.dataset.id}&type=${this.data.cateName}`
     })
   }
 })

@@ -18,7 +18,7 @@
             </view>
             <view class="second-line">
               <view>
-                <text>¥{{item.minPrice}}</text>
+                <text>¥{{item.originalPrice}}</text>
               </view>
             </view>
           </view>
@@ -26,4 +26,7 @@
       </block>
     </view>
   </scroll-view>
+  <view class="contact">
+          <contact-button style="opacity:0;position:absolute;" type="default-dark"  session-from="weapp" size="27"></contact-button>
+  </view>
 </view>

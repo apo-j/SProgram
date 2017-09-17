@@ -27,13 +27,21 @@
         <navigator url="/pages/notice/show?id={{noticeMap.id}}">公告：{{noticeMap.title}}</navigator>
     </view>
     <view class="goods-container">
-        <view class="goods-box" wx:for-items="{{goods}}" wx:key="{{index}}" bindtap="toDetailsTap" data-id="{{item.id}}">
-           <view class="img-box">
-              <image src="{{item.pic}}" class="image"/>
-           </view>
-           <view class="goods-title">{{item.name}}</view>
-           <view class="goods-price">¥ {{item.minPrice}}</view>
-        </view>
+        <block wx:for-items="{{goods}}" wx:key="name">
+            <view class="cate-head" catchtap="tapCategory" data-name="{{item.name}}" data-id="{{item.id}}">
+                <image src="{{item.imageUrl}}"/>
+            </view>
+            <view class="goods-box" wx:for-items="{{item.items}}" wx:key="{{index}}" bindtap="toDetailsTap" data-id="{{item.id}}">
+                <view class="img-box">
+                    <image src="{{item.pic}}" class="image"/>
+                </view>
+                <view class="goods-title">{{item.name}}</view>
+                <view class="goods-price">¥ {{item.originalPrice}}</view>
+            </view>
+        </block>
+    </view>
+    <view class="contact">
+          <contact-button style="opacity:0;position:absolute;" type="default-dark"  session-from="weapp" size="27"></contact-button>
     </view>
     <view hidden="{{loadingMoreHidden ? true : false}}" class="no-more-goods">没有更多啦</view>
 </view>

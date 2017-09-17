@@ -8,27 +8,17 @@ Page({
     // UI
     swiperCurrent: 0,  
     selectCurrent:0,
-    activeCategoryId: 0,
 
     // Data
-    categories: [{icon: "../../images/categories/icon-new-list1.png", name: "成衣", id: 2012},
-                {icon: "../../images/categories/icon-new-list2.png", name: "箱包", id: 2013},
-                {icon: "../../images/categories/icon-new-list3.png", name: "鞋履", id: 2014},
-                {icon: "../../images/categories/icon-new-list4.png", name: "珠宝", id: 2015}],    
+    categories: [{icon: "../../images/categories/icon-new-list1.png", name: "成衣", id: 2012, imageUrl: 'https://cdn.it120.cc/apifactory/2017/09/15/f791d2637ff435e80f1c9898ada318a1.jpg'},
+                {icon: "../../images/categories/icon-new-list2.png", name: "箱包", id: 2013, imageUrl: 'https://cdn.it120.cc/apifactory/2017/09/15/9f39b454cfbc9c8fa61cfe929374aa02.jpg'},
+                {icon: "../../images/categories/icon-new-list3.png", name: "鞋履", id: 2014, imageUrl: 'https://cdn.it120.cc/apifactory/2017/09/15/c2f4b983104c1848ebefbd7b5f13299c.jpg'},
+                {icon: "../../images/categories/icon-new-list4.png", name: "珠宝", id: 2015, imageUrl: 'https://cdn.it120.cc/apifactory/2017/09/15/bedb5a2ec984f0845c059d82ab08e5b5.jpg'}],    
     goods:[],
     scrollTop:"0",
-    loadingMoreHidden:true,
-
-    hasNoCoupons:true,
-    coupons: []
+    loadingMoreHidden:true
   },
 
-  tabClick: function (e) {
-    this.setData({
-      activeCategoryId: e.currentTarget.id
-    });
-    this.getGoodsList(this.data.activeCategoryId);
-  },
   //事件处理函数
   swiperchange: function(e) {
        this.setData({  
@@ -46,7 +36,7 @@ Page({
     var data = e.currentTarget.dataset
     app.globalData.currentCate = {name: data.name, id: data.id}
     wx.navigateTo({
-      url: `../category/index?id=${data.id}`
+      url: `../category/index?id=${data.id}&name=${data.name}`
     })
   },
   toDetailsTap:function(e){
@@ -85,11 +75,13 @@ Page({
     var that = this;
     api.getProducts({
       data: {
-        categoryId: categoryId
+        categoryId: categoryId,
+        recommendStatus: 1
       },
       success: function(res) {
+        const goods = [];
         that.setData({
-          goods:[],
+          goods:goods,
           loadingMoreHidden:true
         });
 
@@ -100,75 +92,17 @@ Page({
           return;
         }
 
+        for(let cate of that.data.categories){
+           cate.items = [...res.data.data.filter((good) => {
+             return good.categoryId === cate.id;
+           })];
+
+           goods.push(cate);
+        }
+
         that.setData({
-          goods:[...res.data.data],
+          goods:[...goods],
         });
-      }
-    })
-  },
-  getCoupons: function () {
-    var that = this;
-    wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/discounts/coupons',
-      data: {
-        type: ''
-      },
-      success: function (res) {
-        if (res.data.code == 0) {
-          that.setData({
-            hasNoCoupons: false,
-            coupons: res.data.data
-          });
-        }
-      }
-    })
-  },
-  gitCoupon : function (e) {
-    var that = this;
-    wx.request({
-      url: 'https://api.it120.cc/' + app.globalData.subDomain + '/discounts/fetch',
-      data: {
-        id: e.currentTarget.dataset.id,
-        token: app.globalData.token
-      },
-      success: function (res) {
-        if (res.data.code == 20001 || res.data.code == 20002) {
-          wx.showModal({
-            title: '错误',
-            content: '来晚了',
-            showCancel: false
-          })
-          return;
-        }
-        if (res.data.code == 20003) {
-          wx.showModal({
-            title: '错误',
-            content: '你领过了，别贪心哦~',
-            showCancel: false
-          })
-          return;
-        }
-        if (res.data.code == 20004) {
-          wx.showModal({
-            title: '错误',
-            content: '已过期~',
-            showCancel: false
-          })
-          return;
-        }
-        if (res.data.code == 0) {
-          wx.showToast({
-            title: '领取成功，赶紧去下单吧~',
-            icon: 'success',
-            duration: 2000
-          })
-        } else {
-          wx.showModal({
-            title: '错误',
-            content: res.data.msg,
-            showCancel: false
-          })
-        }
       }
     })
   },

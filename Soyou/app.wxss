@@ -7,3 +7,14 @@
   justify-content: space-between;
   box-sizing: border-box;
 } 
+
+.contact{
+  line-height: 100rpx;
+  width: 120rpx;
+  height: 120rpx;
+  position: fixed;
+  right:0;
+  bottom:20rpx;
+  background:url("https://cdn.it120.cc/images/weappshop/kefu.png") no-repeat center 21rpx;
+  background-size: 100rpx auto;
+}
