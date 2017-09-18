@@ -79,6 +79,9 @@ swiper-item image {
 .goods-container .cate-head{
   width:100%;
 }
+.goods-container .cate-head image{
+  width:100%;
+}
 .goods-box{
   width: 248rpx;
   height: 381rpx;
